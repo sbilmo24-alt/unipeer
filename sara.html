@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Together To A+ | Final Fixed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; }
+    body { background: #f0f4f9; color: #334155; }
+   .app { max-width: 500px; margin: auto; background: #fff; min-height: 100vh; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); display: flex; flex-direction: column; }
+   .top { background: #0d2b66; color: #fff; padding: 20px 16px; text-align: center; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
+   .page { padding: 20px 16px; display: none; flex: 1; }
+   .page.active { display: block; }
+    h3 { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: #0d2b66; border-left: 3px solid #2563eb; padding-left: 8px; }
+    label { font-size: 13px; font-weight: 600; margin-top: 14px; display: block; }
+    input, select, textarea { width: 100%; padding: 11px; margin-top: 6px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 13px; }
+   .btn { width: 100%; padding: 12px; background: #2563eb; color: #fff; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 12px; cursor: pointer; }
+   .btn-home { background: #f1f5f9; color: #0d2b66; border: 1px solid #e2e8f0; }
+   .check { border: 1.5px solid #cbd5e1; padding: 12px; border-radius: 10px; margin-top: 8px; display: flex; justify-content: space-between; font-size: 13px; cursor: pointer; }
+   .check.active { border-color: #2563eb; background: #eff6ff; }
+   .item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; margin-bottom: 8px; font-size: 13px; cursor: pointer; }
+   .badge { background: #16a34a; color: #fff; padding: 2px 8px; border-radius: 20px; font-size: 11px; float: right; }
+   .private { background: #fffdf5; border: 1px dashed #eab308; padding: 14px; border-radius: 12px; margin-top: 16px; }
+   .lock-box { background: #fff5f5; border: 1px solid #fecaca; padding: 16px; border-radius: 12px; margin-top: 12px; display: none; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><h2>Together To A+</h2><small>Smart Library + Private Chat</small></div>
+
+  <div id="p1" class="page active">
+    <h3>Login as</h3>
+    <button class="btn" onclick="go(2)">Student Needs Help</button>
+    <button class="btn" style="background:#0d2b66" onclick="go(5)">Apply as Volunteer</button>
+    <button class="btn btn-home" onclick="showAdminLock()">Student Union Admin</button>
+    <div id="adminLockBox" class="lock-box">
+      <input id="adminPassInput" type="password" placeholder="Enter admin password">
+      <button class="btn" style="background:#991b1b;" onclick="verifyAdminPassword()">Enter Dashboard</button>
+    </div>
+  </div>
+
+  <div id="p2" class="page">
+    <h3>Student Registration</h3>
+    <label>Full Name *</label><input id="sName" placeholder="Your name">
+    <label>Academic Year</label>
+    <select id="sYear"><option value="1">Year 1</option><option value="2">Year 2</option><option value="3">Year 3</option><option value="4">Year 4</option></select>
+    <button class="btn" onclick="registerStudent()">Continue</button>
+    <button class="btn btn-home" onclick="go(1)">Home</button>
+  </div>
+
+  <div id="p3" class="page">
+    <h3>What's your problem?</h3>
+    <div class="check" data-topic="ref"><span>Can't find references</span></div>
+    <div class="check" data-topic="time"><span>Can't manage time</span></div>
+    <div class="check" data-topic="lang"><span>Language is difficult</span></div>
+    <div class="check" data-topic="study"><span>Don't know how to study</span></div>
+    <div class="check" data-topic="major"><span>Confused about major</span></div>
+    <button class="btn btn-home" onclick="go(1)">Home</button>
+  </div>
+
+  <div id="p4" class="page">
+    <h3 id="libTitle">Suggested Resources</h3>
+    <div id="resourceList"></div>
+    <div style="margin-top:18px; border-top:1px solid #e2e8f0; padding-top:14px">
+      <h3>Available Volunteers</h3>
+      <div id="volList"></div>
+    </div>
+    <div id="privateChat" class="private" style="display:none">
+      <h3>Private chat with <span id="chatWith"></span></h3>
+      <div id="chatBox" style="background:#fff; border:1px solid #cbd5e1; height:150px; padding:8px; margin:8px 0; overflow:auto; font-size:12px; border-radius:8px;"></div>
+      <textarea id="chatInput" placeholder="Type your question..."></textarea>
+      <button class="btn" onclick="sendPrivate()">Send</button>
+    </div>
+    <button class="btn btn-home" onclick="go(1)">Home</button>
+  </div>
+
+  <div id="p5" class="page">
+    <h3>Volunteer Application</h3>
+    <label>Full Name *</label><input id="vName" placeholder="Your full name">
+    <label>Academic Year</label>
+    <select id="vYear"><option value="2">Year 2</option><option value="3">Year 3</option><option value="4">Year 4</option><option value="5">Graduate</option></select>
+    <label>GPA Score (0 to 4) *</label><input id="vGpa" type="number" min="0" max="4" step="0.1" placeholder="Ex: 3.7">
+    <label>Main Help Field:</label>
+    <select id="vSpec">
+      <option value="ref">References</option><option value="time">Time Management</option>
+      <option value="lang">Language</option><option value="study">Study Skills</option><option value="major">Academic Guidance</option>
+    </select>
+    <button class="btn" onclick="registerVolunteer()">Submit Application</button>
+    <button class="btn btn-home" onclick="go(1)">Home</button>
+  </div>
+
+  <div id="p6" class="page"><h3>Admin - Volunteers List</h3><div id="adminList"></div><button class="btn btn-home" onclick="go(1)">Home</button></div>
+</div>
+
+<script>
+let sYear=1, currentVolunteerName='', sNameVal='';
+const library={ ref:[{title:'Egyptian Knowledge Bank',used:124},{title:'College Digital Library PDF',used:89}], time:[{title:'3-Hour Study Plan',used:210},{title:'Forest App',used:156}], lang:[{title:'Academic Terms Dictionary',used:180}], study:[{title:'Smart Lecture Summarization',used:230}], major:[{title:'Majors Guide',used:300}] };
+let volunteers = JSON.parse(localStorage.getItem('volunteers')) || [
+  {name:'Nour - Year 4', year:4, spec:'time', specName:'Time Management', gpa:3.8, points:120},
+  {name:'Mohamed - Year 3', year:3, spec:'ref', specName:'References', gpa:3.5, points:80}
+];
+const specMap={ref:'References',time:'Time Management',lang:'Language',study:'Study Skills',major:'Academic Guidance'};
+
+function saveData(){ localStorage.setItem('volunteers', JSON.stringify(volunteers)); }
+function go(n){ document.getElementById('adminLockBox').style.display='none'; document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById('p'+n).classList.add('active'); if(n==6) renderAdmin(); }
+function showAdminLock(){ let box=document.getElementById('adminLockBox'); box.style.display = box.style.display==='block'?'none':'block'; }
+function verifyAdminPassword(){ if(document.getElementById('adminPassInput').value==="Admin123") go(6); else alert("Wrong password!"); }
+function registerStudent(){ let name=document.getElementById('sName').value.trim(); if(!name){alert("Enter your name");return;} sNameVal=name; sYear=parseInt(document.getElementById('sYear').value); go(3); }
+function registerVolunteer(){
+  let vn=document.getElementById('vName').value.trim(); if(!vn){alert('Enter your name');return;}
+  let gpa=parseFloat(document.getElementById('vGpa').value); if(isNaN(gpa)||gpa<0||gpa>4){alert('Enter GPA from 0 to 4');return;}
+  let year=parseInt(document.getElementById('vYear').value); let spec=document.getElementById('vSpec').value;
+  volunteers.push({name: vn+' - Year '+year, year:year, spec:spec, specName:specMap[spec], gpa:gpa, points:0});
+  saveData(); alert('Application Submitted ✅'); go(1);
+}
+// Safe rendering to prevent XSS
+function selectTopic(t, el){ go(4); document.getElementById('libTitle').textContent='Solutions for: '+ t; let l=document.getElementById('resourceList'); l.innerHTML=''; library[t].forEach(r=>{ let div=document.createElement('div'); div.className='item'; div.textContent=r.title + ' ('+r.used+' helped)'; l.appendChild(div); }); renderVolunteers(t); }
+function renderVolunteers(t){ let v=document.getElementById('volList'); v.innerHTML=''; let list=volunteers.filter(x=>x.year>sYear && x.spec==t); if(list.length==0) list=volunteers.filter(x=>x.year>sYear); if(list.length==0) list=volunteers; list.forEach(o=>{ let div=document.createElement('div'); div.className='item'; div.innerHTML=`<b>${o.specName}</b> - ${o.name} (GPA: ${o.gpa}) <span class=badge>${o.points} pts</span>`; div.onclick=()=>openPrivate(o.name); v.appendChild(div); }); }
+function openPrivate(n){ currentVolunteerName=n; document.getElementById('privateChat').style.display='block'; document.getElementById('chatWith').textContent=n; }
+function sendPrivate(){ let m=document.getElementById('chatInput').value.trim(); if(!m)return; let b=document.getElementById('chatBox'); let userDiv=document.createElement('div'); userDiv.textContent=sNameVal+': '+m; b.appendChild(userDiv); document.getElementById('chatInput').value=''; }
+function renderAdmin(){ let a=document.getElementById('adminList'); a.innerHTML=''; volunteers.forEach((v,i)=>{ let div=document.createElement('div'); div.className='item'; div.textContent=`${v.name} - GPA: ${v.gpa} - ${v.points} pts`; let btn=document.createElement('button'); btn.textContent='+10'; btn.onclick=()=>{volunteers[i].points+=10; saveData(); renderAdmin();}; div.appendChild(btn); a.appendChild(div); }); }
+document.querySelectorAll('.check').forEach(c=> c.addEventListener('click', function(){ selectTopic(this.dataset.topic, this); }));
+</script>
+</body>
+</html>
